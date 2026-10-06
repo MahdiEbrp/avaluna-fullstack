@@ -1,0 +1,104 @@
+{{define "content"}}
+<div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+  {{range .Kpis}}
+  <div class="stat">
+    <div class="flex items-center justify-between">
+      <span class="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{{.Label}}</span>
+      <span class="text-lg">{{.Icon}}</span>
+    </div>
+    <div class="mt-2 text-2xl font-black text-slate-900">{{.Value}}</div>
+    {{if .Hint}}<div class="mt-1 text-[11px] text-slate-400">{{.Hint}}</div>{{end}}
+  </div>
+  {{end}}
+</div>
+
+<div class="mt-5 grid gap-5 xl:grid-cols-3">
+  <section class="card xl:col-span-2">
+    <div class="flex items-center justify-between border-b border-slate-100 px-5 py-3.5">
+      <h2 class="text-base">{{.T "admin.revenue"}} — 14d</h2>
+      <a class="btn-ghost btn-sm" href="/admin/reports">{{.T "admin.reports"}}</a>
+    </div>
+    <div class="p-5">
+      <div class="flex h-48 items-end gap-1.5">
+        {{range .Chart}}
+        <div class="group relative flex-1">
+          <div class="rounded-t bg-cyan-600/80 transition group-hover:bg-cyan-700" style="height:{{.Height}}px"></div>
+          <div class="absolute -top-7 start-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded bg-slate-900 px-1.5 py-1 text-[10px] text-white group-hover:block">{{.Label}}: {{.Value}}</div>
+        </div>
+        {{end}}
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="border-b border-slate-100 px-5 py-3.5"><h2 class="text-base">{{.T "admin.health"}}</h2></div>
+    <div class="space-y-2.5 p-5 text-sm">
+      {{range .Health}}
+      <div class="flex items-center justify-between">
+        <span class="text-slate-500">{{.Label}}</span>
+        <span class="badge {{.Class}}">{{.Value}}</span>
+      </div>
+      {{end}}
+    </div>
+  </section>
+</div>
+
+<div class="mt-5 grid gap-5 xl:grid-cols-2">
+  <section class="card overflow-hidden">
+    <div class="flex items-center justify-between border-b border-slate-100 px-5 py-3.5">
+      <h2 class="text-base">{{.T "admin.orders"}}</h2>
+      <a class="btn-ghost btn-sm" href="/admin/orders">{{.T "common.more"}}</a>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="table">
+        <thead><tr><th>#</th><th>{{.T "common.email"}}</th><th>{{.T "common.status"}}</th><th>{{.T "common.total"}}</th></tr></thead>
+        <tbody>
+          {{range .RecentOrders}}
+          <tr>
+            <td class="font-mono text-xs">{{.number}}</td>
+            <td class="text-xs">{{.email}}</td>
+            <td><span class="badge {{.statusClass}}">{{.status}}</span></td>
+            <td class="font-semibold">{{.total}}</td>
+          </tr>
+          {{end}}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card overflow-hidden">
+    <div class="flex items-center justify-between border-b border-slate-100 px-5 py-3.5">
+      <h2 class="text-base">{{.T "admin.inventory"}}</h2>
+      <a class="btn-ghost btn-sm" href="/admin/products">{{.T "common.more"}}</a>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="table">
+        <thead><tr><th>{{.T "common.name"}}</th><th>SKU</th><th>{{.T "common.quantity"}}</th></tr></thead>
+        <tbody>
+          {{range .LowStock}}
+          <tr>
+            <td class="text-xs">{{.name}}</td>
+            <td class="font-mono text-xs text-slate-500">{{.sku}}</td>
+            <td><span class="badge bg-amber-100 text-amber-800">{{.quantity}}</span></td>
+          </tr>
+          {{else}}
+          <tr><td colspan="3" class="py-8 text-center text-xs text-slate-400">{{.T "common.empty"}}</td></tr>
+          {{end}}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<section class="card mt-5">
+  <div class="border-b border-slate-100 px-5 py-3.5"><h2 class="text-base">{{.T "admin.modules"}} (31)</h2></div>
+  <div class="grid gap-2 p-5 sm:grid-cols-2 lg:grid-cols-4">
+    {{range .Modules}}
+    <div class="flex items-center justify-between rounded-lg border border-slate-200 px-3 py-2 text-xs">
+      <span class="truncate text-slate-700">{{.Name}}</span>
+      <span class="badge bg-emerald-100 text-emerald-700">{{.Routes}}</span>
+    </div>
+    {{end}}
+  </div>
+</section>
+{{end}}

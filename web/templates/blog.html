@@ -1,0 +1,19 @@
+{{define "content"}}
+<div class="container-x py-8">
+  <h1 class="mb-6 text-2xl">{{.T "nav.blog"}}</h1>
+  <div class="grid gap-5 md:grid-cols-3">
+    {{range .Posts}}
+    <a href="/blog/{{.slug}}" class="card overflow-hidden transition hover:-translate-y-0.5 hover:shadow-soft">
+      <div class="aspect-video bg-gradient-to-br from-cyan-700 to-slate-800"></div>
+      <div class="p-5">
+        <div class="text-[11px] font-semibold uppercase tracking-wide text-cyan-700">{{.category}} · {{.date}}</div>
+        <h2 class="mt-2 line-clamp-2 text-sm">{{.title}}</h2>
+        <p class="mt-2 line-clamp-3 text-xs leading-6 text-slate-500">{{.excerpt}}</p>
+        <div class="mt-3 text-[11px] text-slate-400">👁 {{.views}}</div>
+      </div>
+    </a>
+    {{end}}
+  </div>
+  {{template "pager" .Pager}}
+</div>
+{{end}}

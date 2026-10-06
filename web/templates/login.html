@@ -1,0 +1,27 @@
+{{define "content"}}
+<div class="container-x grid place-items-center py-16">
+  <div class="w-full max-w-md">
+    <div class="card p-8">
+      <h1 class="text-xl">{{.T "auth.login.title"}}</h1>
+      <p class="mt-1 text-xs text-slate-500">{{.Tagline}}</p>
+      <form method="post" action="/login" class="mt-6 space-y-3">
+        <div><label class="label">{{.T "common.email"}}</label><input name="email" type="email" value="{{.Email}}" class="input" required autofocus></div>
+        <div><label class="label">{{.T "common.password"}}</label><input name="password" type="password" class="input" required></div>
+        <div><label class="label">{{.T "auth.2fa"}} <span class="font-normal text-slate-400">({{.T "common.optional"}})</span></label><input name="code" inputmode="numeric" class="input" placeholder="000000"></div>
+        {{if .Error}}<p class="rounded-lg bg-rose-50 p-2.5 text-xs text-rose-700">{{.Error}}</p>{{end}}
+        <button class="btn-primary w-full">{{.T "nav.login"}}</button>
+      </form>
+      <div class="mt-5 flex items-center justify-between text-xs">
+        <a class="text-cyan-700 hover:underline" href="/register">{{.T "nav.register"}}</a>
+        <a class="text-slate-500 hover:underline" href="/forgot">{{.T "auth.forgot"}}</a>
+      </div>
+    </div>
+    <div class="card mt-4 p-4 text-[11px] leading-6 text-slate-500">
+      <div class="mb-1 font-semibold text-slate-700">Demo accounts</div>
+      <div><code>admin@yourstore.com</code> / <code>Admin@12345</code> — super_admin</div>
+      <div><code>vendor1@yourstore.com</code> / <code>Vendor@12345</code> — vendor</div>
+      <div><code>ali@example.com</code> / <code>Customer@12345</code> — customer</div>
+    </div>
+  </div>
+</div>
+{{end}}

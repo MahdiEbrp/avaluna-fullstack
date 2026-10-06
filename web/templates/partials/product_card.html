@@ -1,0 +1,30 @@
+{{define "product_card"}}
+<article class="card group overflow-hidden transition hover:shadow-soft">
+  <a href="/product/{{.slug}}" class="block">
+    <div class="relative aspect-square overflow-hidden bg-slate-100">
+      <img src="{{.thumbnail}}" alt="{{.title}}" loading="lazy"
+           class="h-full w-full object-cover transition duration-300 group-hover:scale-105">
+      {{if .discount}}
+      <span class="badge absolute top-2 start-2 bg-rose-600 text-white">-{{.discount}}%</span>
+      {{end}}
+      {{if .featured}}
+      <span class="badge absolute top-2 end-2 bg-amber-400 text-amber-950">★</span>
+      {{end}}
+    </div>
+  </a>
+  <div class="p-3.5">
+    <a href="/product/{{.slug}}" class="line-clamp-2 min-h-[2.6rem] text-sm font-semibold text-slate-800 hover:text-cyan-700">{{.title}}</a>
+    <div class="mt-1.5 flex items-center gap-1 text-[11px] text-amber-500">
+      {{.stars}}<span class="text-slate-400">({{.ratingCount}})</span>
+    </div>
+    <div class="mt-2.5 flex items-end justify-between gap-2">
+      <div>
+        {{if .comparePrice}}<div class="text-[11px] text-slate-400 line-through">{{.comparePrice}}</div>{{end}}
+        <div class="text-sm font-extrabold text-slate-900">{{.price}}</div>
+      </div>
+      <button class="btn-primary btn-sm" hx-post="/cart/add" hx-vals='{"productId":{{.id}},"quantity":1}'
+              hx-target="#cart-count" hx-swap="innerHTML">+</button>
+    </div>
+  </div>
+</article>
+{{end}}

@@ -1,0 +1,83 @@
+{{define "content"}}
+<div class="container-x py-8">
+  <nav class="mb-5 text-xs text-slate-400">
+    <a class="hover:text-cyan-700" href="/">{{.T "nav.home"}}</a> / <span class="text-slate-600">{{.T "nav.shop"}}</span>
+  </nav>
+
+  <div class="grid gap-6 lg:grid-cols-[260px_1fr]">
+    <aside class="space-y-4">
+      <form method="get" action="/shop" class="card space-y-5 p-5">
+        <div>
+          <h3 class="mb-3 text-sm">{{.T "shop.filters"}}</h3>
+          <input type="search" name="q" value="{{.Query}}" class="input" placeholder="{{.T `nav.search.ph`}}">
+        </div>
+
+        <div>
+          <div class="label">{{.T "nav.categories"}}</div>
+          <select name="category" class="input">
+            <option value="">{{.T "common.all"}}</option>
+            {{range .Categories}}
+            <option value="{{.slug}}" {{if eq .slug $.Filters.category}}selected{{end}}>{{.name}}</option>
+            {{end}}
+          </select>
+        </div>
+
+        <div>
+          <div class="label">{{.T "shop.brands"}}</div>
+          <select name="brand" class="input">
+            <option value="">{{.T "common.all"}}</option>
+            {{range .Brands}}
+            <option value="{{.slug}}" {{if eq .slug $.Filters.brand}}selected{{end}}>{{.name}}</option>
+            {{end}}
+          </select>
+        </div>
+
+        <div>
+          <div class="label">{{.T "common.price"}}</div>
+          <div class="flex items-center gap-2">
+            <input type="number" name="minPrice" value="{{.Filters.minPrice}}" class="input" placeholder="0">
+            <span class="text-slate-400">—</span>
+            <input type="number" name="maxPrice" value="{{.Filters.maxPrice}}" class="input" placeholder="∞">
+          </div>
+        </div>
+
+        <div>
+          <div class="label">{{.T "common.sort"}}</div>
+          <select name="sort" class="input">
+            <option value="newest" {{if eq .Filters.sort "newest"}}selected{{end}}>{{.T "shop.sort.newest"}}</option>
+            <option value="popular" {{if eq .Filters.sort "popular"}}selected{{end}}>{{.T "shop.sort.popular"}}</option>
+            <option value="rating" {{if eq .Filters.sort "rating"}}selected{{end}}>{{.T "shop.sort.rating"}}</option>
+            <option value="price_asc" {{if eq .Filters.sort "price_asc"}}selected{{end}}>{{.T "common.price"}} ↑</option>
+            <option value="price_desc" {{if eq .Filters.sort "price_desc"}}selected{{end}}>{{.T "common.price"}} ↓</option>
+          </select>
+        </div>
+
+        <div class="flex gap-2">
+          <button class="btn-primary flex-1" type="submit">{{.T "common.apply"}}</button>
+          <a class="btn-ghost" href="/shop">{{.T "common.reset"}}</a>
+        </div>
+      </form>
+    </aside>
+
+    <div>
+      <div class="mb-4 flex items-center justify-between">
+        <h1 class="text-xl">{{.Heading}}</h1>
+        <span class="text-xs text-slate-500">{{.Total}} {{.T "shop.results"}}</span>
+      </div>
+
+      {{if .Products}}
+      <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4">
+        {{range .Products}}{{template "product_card" .}}{{end}}
+      </div>
+      {{template "pager" .Pager}}
+      {{else}}
+      <div class="card grid place-items-center gap-3 p-16 text-center">
+        <span class="text-4xl">🔎</span>
+        <p class="text-sm text-slate-500">{{.T "common.empty"}}</p>
+        <a class="btn-ghost btn-sm" href="/shop">{{.T "common.reset"}}</a>
+      </div>
+      {{end}}
+    </div>
+  </div>
+</div>
+{{end}}

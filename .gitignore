@@ -1,0 +1,33 @@
+# env / secrets
+.env
+.env.*
+!.env.example
+
+# runtime data
+/data/*
+!/data/.gitkeep
+
+# generated invoices/output from cron jobs
+/internal/cron/data/
+
+# build artefacts
+/bin/
+/web/static/css/app.css
+
+# local toolchain (provisioned by the bootstrap, not part of the repo)
+/.cache/
+/.gopath/
+/.config/
+/.toolchain/
+
+# Go test / coverage
+*.test
+*.out
+coverage.*
+
+# editor / OS noise
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/

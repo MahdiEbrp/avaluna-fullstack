@@ -1,0 +1,65 @@
+{{define "content"}}
+<div class="container-x py-8">
+  <h1 class="mb-6 text-2xl">{{.T "cart.title"}}</h1>
+
+  {{if .Items}}
+  <div class="grid gap-6 lg:grid-cols-[1fr_340px]">
+    <div class="card divide-y divide-slate-100">
+      {{range .Items}}
+      <div class="flex items-center gap-4 p-4">
+        <img src="{{.thumbnail}}" alt="{{.name}}" class="h-20 w-20 shrink-0 rounded-xl border border-slate-200 object-cover">
+        <div class="min-w-0 flex-1">
+          <a href="/product/{{.slug}}" class="line-clamp-2 text-sm font-semibold text-slate-800 hover:text-cyan-700">{{.name}}</a>
+          <div class="mt-1 text-xs text-slate-400">{{.sku}}</div>
+          <div class="mt-2 flex items-center gap-2">
+            <form hx-post="/cart/update" hx-target="body" hx-swap="outerHTML" class="flex items-center gap-2">
+              <input type="hidden" name="itemId" value="{{.id}}">
+              <input type="number" name="quantity" min="0" value="{{.quantity}}" class="input w-20 py-1.5 text-xs">
+              <button class="btn-ghost btn-sm">{{.T_save}}</button>
+            </form>
+            <button class="btn-sm text-xs font-semibold text-rose-600 hover:underline"
+                    hx-post="/cart/remove" hx-vals='{"itemId":{{.id}}}' hx-target="body" hx-swap="outerHTML">
+              {{.T_remove}}
+            </button>
+          </div>
+        </div>
+        <div class="text-end">
+          <div class="text-sm font-extrabold text-slate-900">{{.lineTotal}}</div>
+          <div class="text-[11px] text-slate-400">{{.unitPrice}}</div>
+        </div>
+      </div>
+      {{end}}
+    </div>
+
+    <aside class="space-y-4">
+      <form class="card space-y-3 p-5" hx-post="/cart/coupon" hx-target="body" hx-swap="outerHTML">
+        <label class="label">{{.T "cart.coupon"}}</label>
+        <div class="flex gap-2">
+          <input name="code" value="{{.CouponCode}}" class="input" placeholder="WELCOME10">
+          <button class="btn-ghost">{{.T "common.apply"}}</button>
+        </div>
+        {{if .CouponMessage}}<p class="text-xs {{if .CouponApplied}}text-emerald-600{{else}}text-rose-600{{end}}">{{.CouponMessage}}</p>{{end}}
+      </form>
+
+      <div class="card space-y-2.5 p-5 text-sm">
+        <div class="flex justify-between"><span class="text-slate-500">{{.T "cart.subtotal"}}</span><span class="font-semibold">{{.Totals.subtotal}}</span></div>
+        <div class="flex justify-between"><span class="text-slate-500">{{.T "cart.discount"}}</span><span class="font-semibold text-emerald-600">−{{.Totals.discount}}</span></div>
+        <div class="flex justify-between"><span class="text-slate-500">{{.T "cart.tax"}}</span><span class="font-semibold">{{.Totals.tax}}</span></div>
+        <div class="flex justify-between"><span class="text-slate-500">{{.T "cart.shipping"}}</span><span class="font-semibold">{{.Totals.shipping}}</span></div>
+        <div class="mt-2 flex justify-between border-t border-slate-200 pt-3 text-base">
+          <span class="font-bold">{{.T "common.total"}}</span><span class="font-black text-cyan-800">{{.Totals.grand}}</span>
+        </div>
+        <a href="/checkout" class="btn-accent mt-3 w-full">{{.T "cart.checkout"}}</a>
+        <a href="/shop" class="btn-ghost w-full">{{.T "cart.continue"}}</a>
+      </div>
+    </aside>
+  </div>
+  {{else}}
+  <div class="card grid place-items-center gap-4 p-20 text-center">
+    <span class="text-5xl">🛒</span>
+    <p class="text-sm text-slate-500">{{.T "cart.empty"}}</p>
+    <a class="btn-primary" href="/shop">{{.T "cart.continue"}}</a>
+  </div>
+  {{end}}
+</div>
+{{end}}

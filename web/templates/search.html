@@ -1,0 +1,15 @@
+{{define "content"}}
+<div class="container-x py-8">
+  <h1 class="mb-2 text-2xl">{{.T "nav.search"}}</h1>
+  <p class="mb-6 text-sm text-slate-500">“{{.Query}}” — {{.Total}} {{.T "shop.results"}}</p>
+  {{if .Products}}
+  <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+    {{range .Products}}{{template "product_card" .}}{{end}}
+  </div>
+  {{else}}
+  <div class="card grid place-items-center gap-3 p-16 text-center">
+    <span class="text-4xl">🔎</span><p class="text-sm text-slate-500">{{.T "common.empty"}}</p>
+  </div>
+  {{end}}
+</div>
+{{end}}

@@ -1,0 +1,52 @@
+{{define "layout"}}<!DOCTYPE html>
+<html lang="{{.Loc}}" dir="{{.Dir}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{.Title}} — {{.T "admin.title"}}</title>
+<meta name="csrf-token" content="{{.CSRF}}">
+<link rel="icon" href="/static/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/static/css/app.css">
+<script src="/static/js/htmx.min.js" defer></script>
+<script src="/static/js/htmx-ext-json-enc.js" defer></script>
+<script src="/static/js/alpine.min.js" defer></script>
+</head>
+<body class="min-h-screen bg-slate-100" hx-headers='{"X-CSRF-Token":"{{.CSRF}}"}'>
+<div class="flex min-h-screen">
+  <aside class="hidden w-64 shrink-0 flex-col bg-slate-900 lg:flex">
+    <div class="flex h-16 items-center gap-2 border-b border-white/10 px-5">
+      <span class="grid h-8 w-8 place-items-center rounded-lg bg-cyan-600 font-black text-white">A</span>
+      <span class="text-sm font-extrabold text-white">{{.T "admin.title"}}</span>
+    </div>
+    <nav class="flex-1 space-y-0.5 overflow-y-auto p-3">
+      {{range .Nav}}
+      {{if .Section}}<div class="px-3 pb-1 pt-4 text-[10px] font-bold uppercase tracking-widest text-slate-500">{{.Section}}</div>{{end}}
+      {{if .URL}}<a href="{{.URL}}" class="side-link {{if .Active}}side-link-active{{end}}"><span>{{.Icon}}</span><span>{{.Label}}</span></a>{{end}}
+      {{end}}
+    </nav>
+    <div class="border-t border-white/10 p-3 text-[11px] text-slate-400">
+      <div>v{{.Version}} · {{.Uptime}}</div>
+      <a href="/" class="mt-1 block text-cyan-400 hover:underline">← {{.T "nav.home"}}</a>
+    </div>
+  </aside>
+
+  <div class="flex min-w-0 flex-1 flex-col">
+    <header class="flex h-16 items-center gap-3 border-b border-slate-200 bg-white px-5">
+      <h1 class="flex-1 truncate text-base font-bold text-slate-900">{{.Title}}</h1>
+      <div class="flex overflow-hidden rounded-lg border border-slate-300 text-xs font-semibold">
+        {{range .Locales}}
+        <a href="/lang/{{.Code}}?next={{$.Path}}" class="px-2.5 py-1.5 {{if eq .Code $.Loc}}bg-cyan-700 text-white{{else}}bg-white text-slate-600{{end}}">{{.Short}}</a>
+        {{end}}
+      </div>
+      <a href="/api/v1/_routes" class="btn-ghost btn-sm">API</a>
+      <span class="badge bg-slate-100 text-slate-600">{{.User.Email}}</span>
+      <a href="/logout" class="btn-ghost btn-sm">{{.T "nav.logout"}}</a>
+    </header>
+
+    <main class="flex-1 p-5">
+      {{template "content" .}}
+    </main>
+  </div>
+</div>
+</body>
+</html>{{end}}

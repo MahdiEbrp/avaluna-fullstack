@@ -1,0 +1,119 @@
+{{define "layout"}}<!DOCTYPE html>
+<html lang="{{.Loc}}" dir="{{.Dir}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{if .Title}}{{.Title}} — {{end}}{{.SiteName}}</title>
+<meta name="description" content="{{.MetaDescription}}">
+<meta property="og:title" content="{{.Title}}">
+<meta property="og:site_name" content="{{.SiteName}}">
+<meta name="csrf-token" content="{{.CSRF}}">
+<link rel="icon" href="/static/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/static/css/app.css">
+<script src="/static/js/htmx.min.js" defer></script>
+<script src="/static/js/htmx-ext-json-enc.js" defer></script>
+<script src="/static/js/alpine.min.js" defer></script>
+</head>
+<body class="min-h-screen flex flex-col" hx-headers='{"X-CSRF-Token":"{{.CSRF}}"}'>
+
+{{if .Maintenance}}
+<div class="bg-amber-500 px-4 py-2 text-center text-sm font-semibold text-white">
+  {{.T "admin.maintenance"}} — {{.MaintenanceMessage}}
+</div>
+{{end}}
+
+<header class="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
+  <div class="border-b border-slate-100 bg-slate-50">
+    <div class="container-x flex h-9 items-center justify-between text-[11px] text-slate-500">
+      <span>{{.T "home.trust.shipping"}} · {{.T "home.trust.support"}}</span>
+      <div class="flex items-center gap-3">
+        <a class="hover:text-cyan-700" href="/page/contact">{{.T "nav.contact"}}</a>
+        <a class="hover:text-cyan-700" href="/faq">{{.T "nav.faq"}}</a>
+        {{if .IsStaff}}<a class="font-semibold text-cyan-700" href="/admin">{{.T "nav.admin"}}</a>{{end}}
+      </div>
+    </div>
+  </div>
+
+  <div class="container-x flex h-16 items-center gap-4">
+    <a href="/" class="flex items-center gap-2 shrink-0">
+      <span class="grid h-9 w-9 place-items-center rounded-xl bg-cyan-700 text-lg font-black text-white">A</span>
+      <span class="hidden text-base font-extrabold text-slate-900 sm:block">{{.SiteName}}</span>
+    </a>
+
+    <nav class="hidden items-center gap-1 lg:flex">
+      <a class="nav-link" href="/">{{.T "nav.home"}}</a>
+      <a class="nav-link" href="/shop">{{.T "nav.shop"}}</a>
+      <a class="nav-link" href="/blog">{{.T "nav.blog"}}</a>
+      <a class="nav-link" href="/page/about">{{.T "nav.about"}}</a>
+    </nav>
+
+    <form action="/search" method="get" class="relative flex-1">
+      <input name="q" value="{{.Query}}" class="input ps-9" placeholder="{{.T `nav.search.ph`}}"
+             hx-get="/partials/suggest" hx-trigger="keyup changed delay:300ms" hx-target="#suggest" autocomplete="off">
+      <svg class="pointer-events-none absolute inset-y-0 start-3 my-auto h-4 w-4 text-slate-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.45 4.39l3.08 3.08a1 1 0 01-1.42 1.42l-3.08-3.08A7 7 0 012 9z" clip-rule="evenodd"/></svg>
+      <div id="suggest" class="absolute inset-x-0 top-full z-50 mt-1"></div>
+    </form>
+
+    <div class="flex items-center gap-1">
+      <div class="flex overflow-hidden rounded-lg border border-slate-300 text-xs font-semibold">
+        {{range .Locales}}
+        <a href="/lang/{{.Code}}?next={{$.Path}}"
+           class="px-2.5 py-1.5 {{if eq .Code $.Loc}}bg-cyan-700 text-white{{else}}bg-white text-slate-600 hover:bg-slate-50{{end}}">{{.Short}}</a>
+        {{end}}
+      </div>
+      <a class="nav-link hidden sm:inline-block" href="/account/wishlist" title="{{.T `nav.wishlist`}}">♡</a>
+      <a class="relative rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100" href="/cart">
+        🛒
+        <span id="cart-count" class="absolute -top-0.5 end-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-orange-500 px-1 text-[10px] font-bold text-white">{{.CartCount}}</span>
+      </a>
+      {{if .User}}
+      <a class="btn-ghost btn-sm" href="/account">{{.User.FirstName}}</a>
+      <a class="nav-link" href="/logout">{{.T "nav.logout"}}</a>
+      {{else}}
+      <a class="btn-primary btn-sm" href="/login">{{.T "nav.login"}}</a>
+      {{end}}
+    </div>
+  </div>
+</header>
+
+<main class="flex-1">
+  {{template "content" .}}
+</main>
+
+<footer class="mt-16 border-t border-slate-200 bg-white">
+  <div class="container-x grid gap-8 py-12 md:grid-cols-4">
+    <div>
+      <div class="flex items-center gap-2">
+        <span class="grid h-8 w-8 place-items-center rounded-lg bg-cyan-700 font-black text-white">A</span>
+        <span class="font-extrabold">{{.SiteName}}</span>
+      </div>
+      <p class="mt-3 text-sm leading-6 text-slate-500">{{.Tagline}}</p>
+    </div>
+    <div>
+      <h4 class="mb-3 text-sm">{{.T "nav.pages"}}</h4>
+      <ul class="space-y-2 text-sm text-slate-500">
+        {{range .FooterMenu}}<li><a class="hover:text-cyan-700" href="{{.URL}}">{{.Label}}</a></li>{{end}}
+      </ul>
+    </div>
+    <div>
+      <h4 class="mb-3 text-sm">{{.T "nav.categories"}}</h4>
+      <ul class="space-y-2 text-sm text-slate-500">
+        {{range .FooterCats}}<li><a class="hover:text-cyan-700" href="/shop?category={{.Slug}}">{{.Name}}</a></li>{{end}}
+      </ul>
+    </div>
+    <div>
+      <h4 class="mb-3 text-sm">{{.T "home.trust.support"}}</h4>
+      <ul class="space-y-2 text-sm text-slate-500">
+        <li>{{.SupportPhone}}</li>
+        <li>{{.SupportEmail}}</li>
+        <li><a class="hover:text-cyan-700" href="/api/v1/_routes">API /api/v1</a></li>
+        <li><a class="hover:text-cyan-700" href="/sitemap.xml">sitemap.xml</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="border-t border-slate-100 py-4 text-center text-xs text-slate-400">
+    © {{.Year}} {{.SiteName}} · Go + HTMX + Tailwind + SQLite · v{{.Version}}
+  </div>
+</footer>
+</body>
+</html>{{end}}

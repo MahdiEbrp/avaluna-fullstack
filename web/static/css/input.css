@@ -1,0 +1,140 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --brand: 14 116 144;
+    --brand-dark: 8 74 92;
+    --accent: 249 115 22;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  html[dir="rtl"] body {
+    font-family: Vazirmatn, "IRANSansX", "IRANSans", Tahoma, "Segoe UI", sans-serif;
+  }
+
+  html[dir="ltr"] body {
+    font-family: Inter, "Segoe UI", Roboto, system-ui, sans-serif;
+  }
+
+  body {
+    @apply bg-slate-50 text-slate-800 antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-bold text-slate-900;
+  }
+
+  a {
+    @apply transition-colors;
+  }
+
+  ::selection {
+    @apply bg-cyan-700 text-white;
+  }
+}
+
+@layer components {
+  .container-x {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold
+           transition disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .btn-primary {
+    @apply btn bg-cyan-700 text-white shadow-sm hover:bg-cyan-800 active:bg-cyan-900;
+  }
+
+  .btn-accent {
+    @apply btn bg-orange-500 text-white shadow-sm hover:bg-orange-600;
+  }
+
+  .btn-ghost {
+    @apply btn border border-slate-300 bg-white text-slate-700 hover:border-slate-400 hover:bg-slate-50;
+  }
+
+  .btn-danger {
+    @apply btn bg-rose-600 text-white hover:bg-rose-700;
+  }
+
+  .btn-sm {
+    @apply px-3 py-1.5 text-xs;
+  }
+
+  .card {
+    @apply rounded-2xl border border-slate-200 bg-white shadow-sm;
+  }
+
+  .input {
+    @apply w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-800
+           outline-none transition placeholder:text-slate-400
+           focus:border-cyan-600 focus:ring-2 focus:ring-cyan-600/20;
+  }
+
+  .label {
+    @apply mb-1.5 block text-xs font-semibold text-slate-600;
+  }
+
+  .link {
+    @apply font-semibold text-brand-700 underline-offset-2 hover:underline;
+  }
+
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold;
+  }
+
+  .table {
+    @apply w-full text-start text-sm;
+  }
+
+  .table thead th {
+    @apply whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-start
+           text-[11px] font-bold uppercase tracking-wide text-slate-500;
+  }
+
+  .table tbody td {
+    @apply border-b border-slate-100 px-3 py-2.5 align-middle;
+  }
+
+  .table tbody tr:hover {
+    @apply bg-slate-50/70;
+  }
+
+  .nav-link {
+    @apply rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-cyan-800;
+  }
+
+  .side-link {
+    @apply flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-slate-300
+           hover:bg-white/10 hover:text-white;
+  }
+
+  .side-link-active {
+    @apply bg-cyan-600/90 text-white shadow-sm hover:bg-cyan-600;
+  }
+
+  .stat {
+    @apply card p-4;
+  }
+
+  .prose-rtl p {
+    @apply mb-3 leading-8 text-slate-700;
+  }
+}
+
+/* htmx loading affordance */
+.htmx-request .htmx-indicator,
+.htmx-indicator.htmx-request {
+  @apply opacity-100;
+}
+
+.htmx-indicator {
+  @apply pointer-events-none opacity-0 transition-opacity;
+}

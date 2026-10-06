@@ -1,0 +1,50 @@
+{{define "content"}}
+<div class="card overflow-hidden">
+  <div class="flex items-center justify-between border-b border-slate-100 px-5 py-3.5">
+    <h2 class="text-base">{{.T "admin.cron"}} — {{len .Jobs}} jobs</h2>
+    <span class="badge {{if .SchedulerUp}}bg-emerald-100 text-emerald-700{{else}}bg-rose-100 text-rose-700{{end}}">
+      scheduler {{if .SchedulerUp}}running{{else}}stopped{{end}}
+    </span>
+  </div>
+  <div class="overflow-x-auto">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>{{.T "common.name"}}</th><th>{{.T "admin.schedule"}}</th><th>{{.T "common.description"}}</th>
+          <th>Retry</th><th>{{.T "common.status"}}</th><th>Last run</th><th>✓/✗</th><th>{{.T "common.actions"}}</th>
+        </tr>
+      </thead>
+      <tbody id="cron-rows">
+        {{range .Jobs}}
+        <tr>
+          <td class="whitespace-nowrap font-mono text-xs font-semibold text-slate-700">{{.name}}</td>
+          <td class="whitespace-nowrap font-mono text-[11px] text-slate-500">{{.schedule}}</td>
+          <td class="max-w-xs truncate text-xs text-slate-500">{{.description}}</td>
+          <td class="text-[11px]">{{.retry_policy}}</td>
+          <td>
+            <span class="badge {{.statusClass}}">{{.last_status}}</span>
+            {{if not .enabledBool}}<span class="badge bg-slate-200 text-slate-600">paused</span>{{end}}
+          </td>
+          <td class="whitespace-nowrap text-[11px] text-slate-500">{{.last_run_at}}</td>
+          <td class="whitespace-nowrap text-[11px]">
+            <span class="text-emerald-600">{{.success_count}}</span> /
+            <span class="text-rose-600">{{.failure_count}}</span>
+          </td>
+          <td class="whitespace-nowrap">
+            <div class="flex gap-1">
+              <button class="btn-primary btn-sm" hx-post="/admin/cron/{{.name}}/run" hx-target="#cron-result" hx-swap="innerHTML">▶</button>
+              {{if .enabledBool}}
+              <button class="btn-ghost btn-sm" hx-post="/admin/cron/{{.name}}/pause" hx-target="#cron-result" hx-swap="innerHTML">⏸</button>
+              {{else}}
+              <button class="btn-ghost btn-sm" hx-post="/admin/cron/{{.name}}/resume" hx-target="#cron-result" hx-swap="innerHTML">⏵</button>
+              {{end}}
+            </div>
+          </td>
+        </tr>
+        {{end}}
+      </tbody>
+    </table>
+  </div>
+  <div id="cron-result" class="px-5 py-3 text-xs"></div>
+</div>
+{{end}}

@@ -1,0 +1,15 @@
+{{define "pager"}}
+{{if gt .Pages 1}}
+<nav class="mt-8 flex items-center justify-center gap-1.5">
+  {{if gt .Page 1}}
+  <a class="btn-ghost btn-sm" href="{{.Base}}page={{dec .Page}}">‹ {{.PrevLabel}}</a>
+  {{end}}
+  <span class="rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-600">
+    {{.Page}} / {{.Pages}}
+  </span>
+  {{if lt .Page .Pages}}
+  <a class="btn-ghost btn-sm" href="{{.Base}}page={{inc .Page}}">{{.NextLabel}} ›</a>
+  {{end}}
+</nav>
+{{end}}
+{{end}}

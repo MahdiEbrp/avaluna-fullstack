@@ -1,0 +1,81 @@
+{{define "content"}}
+<div class="container-x py-8">
+  <h1 class="mb-6 text-2xl">{{.T "checkout.title"}}</h1>
+
+  <form method="post" action="/checkout" class="grid gap-6 lg:grid-cols-[1fr_340px]">
+    <div class="space-y-5">
+      <section class="card p-5">
+        <h2 class="mb-4 text-base">1 · {{.T "checkout.address"}}</h2>
+        <div class="grid gap-3 sm:grid-cols-2">
+          <div><label class="label">{{.T "common.name"}}</label><input name="recipient" value="{{.Prefill.recipient}}" class="input" required></div>
+          <div><label class="label">{{.T "common.phone"}}</label><input name="phone" value="{{.Prefill.phone}}" class="input" required></div>
+          <div><label class="label">{{.T "common.email"}}</label><input name="email" type="email" value="{{.Prefill.email}}" class="input" required></div>
+          <div><label class="label">Province</label><input name="province" value="{{.Prefill.province}}" class="input"></div>
+          <div><label class="label">City</label><input name="city" value="{{.Prefill.city}}" class="input"></div>
+          <div><label class="label">Postal code</label><input name="postalCode" value="{{.Prefill.postalCode}}" class="input"></div>
+          <div class="sm:col-span-2"><label class="label">Address</label><input name="line1" value="{{.Prefill.line1}}" class="input" required></div>
+        </div>
+      </section>
+
+      <section class="card p-5">
+        <h2 class="mb-4 text-base">2 · {{.T "checkout.shipping"}}</h2>
+        <div class="grid gap-2.5">
+          {{range $i, $m := .ShippingMethods}}
+          <label class="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 p-3.5 hover:border-cyan-400 has-[:checked]:border-cyan-600 has-[:checked]:bg-cyan-50/50">
+            <input type="radio" name="shippingMethodId" value="{{$m.id}}" {{if eq $i 0}}checked{{end}} class="accent-cyan-700">
+            <span class="flex-1">
+              <span class="block text-sm font-semibold text-slate-800">{{$m.name}}</span>
+              <span class="block text-[11px] text-slate-500">{{$m.eta}}</span>
+            </span>
+            <span class="text-sm font-bold text-slate-700">{{$m.cost}}</span>
+          </label>
+          {{end}}
+        </div>
+      </section>
+
+      <section class="card p-5">
+        <h2 class="mb-4 text-base">3 · {{.T "checkout.payment"}}</h2>
+        <div class="grid gap-2.5 sm:grid-cols-2">
+          {{range $i, $p := .PaymentMethods}}
+          <label class="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 p-3.5 hover:border-cyan-400 has-[:checked]:border-cyan-600 has-[:checked]:bg-cyan-50/50">
+            <input type="radio" name="gateway" value="{{$p.code}}" {{if eq $i 0}}checked{{end}} class="accent-cyan-700">
+            <span class="flex-1">
+              <span class="block text-sm font-semibold text-slate-800">{{$p.name}}</span>
+              <span class="block text-[11px] text-slate-500">{{$p.provider}}</span>
+            </span>
+          </label>
+          {{end}}
+        </div>
+        <p class="mt-3 rounded-xl bg-amber-50 p-3 text-[11px] leading-5 text-amber-800">
+          {{.SandboxNote}}
+        </p>
+      </section>
+    </div>
+
+    <aside class="space-y-4">
+      <div class="card p-5">
+        <h2 class="mb-3 text-base">{{.T "checkout.review"}}</h2>
+        <ul class="mb-3 space-y-2 text-xs text-slate-600">
+          {{range .Items}}
+          <li class="flex justify-between gap-2">
+            <span class="line-clamp-1">{{.name}} × {{.quantity}}</span>
+            <span class="shrink-0 font-semibold">{{.lineTotal}}</span>
+          </li>
+          {{end}}
+        </ul>
+        <div class="space-y-2 border-t border-slate-200 pt-3 text-sm">
+          <div class="flex justify-between"><span class="text-slate-500">{{.T "cart.subtotal"}}</span><span>{{.Totals.subtotal}}</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">{{.T "cart.discount"}}</span><span class="text-emerald-600">−{{.Totals.discount}}</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">{{.T "cart.tax"}}</span><span>{{.Totals.tax}}</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">{{.T "cart.shipping"}}</span><span>{{.Totals.shipping}}</span></div>
+          <div class="flex justify-between border-t border-slate-200 pt-3 text-base font-black text-cyan-800">
+            <span>{{.T "common.total"}}</span><span>{{.Totals.grand}}</span>
+          </div>
+        </div>
+        <button class="btn-accent mt-4 w-full" type="submit">{{.T "cart.checkout"}}</button>
+        {{if .Error}}<p class="mt-3 rounded-lg bg-rose-50 p-2.5 text-xs text-rose-700">{{.Error}}</p>{{end}}
+      </div>
+    </aside>
+  </form>
+</div>
+{{end}}

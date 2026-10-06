@@ -1,0 +1,67 @@
+{{define "content"}}
+<div class="grid gap-5 lg:grid-cols-2">
+  <section class="card">
+    <div class="border-b border-slate-100 px-5 py-3.5"><h2 class="text-base">{{.T "admin.settings"}}</h2></div>
+    <form class="space-y-3 p-5" hx-post="/admin/settings" hx-target="#settings-result" hx-swap="innerHTML">
+      {{range .Settings}}
+      <div class="grid grid-cols-[1fr_1.4fr] items-center gap-3">
+        <label class="truncate text-xs font-semibold text-slate-600" title="{{.Key}}">{{.Key}}</label>
+        <input name="{{.Key}}" value="{{.Value}}" class="input py-1.5 text-xs">
+      </div>
+      {{end}}
+      <button class="btn-primary w-full">{{.T "common.save"}}</button>
+      <div id="settings-result" class="text-xs"></div>
+    </form>
+  </section>
+
+  <div class="space-y-5">
+    <section class="card">
+      <div class="border-b border-slate-100 px-5 py-3.5"><h2 class="text-base">{{.T "admin.flags"}}</h2></div>
+      <div class="divide-y divide-slate-100">
+        {{range .Flags}}
+        <div class="flex items-center justify-between px-5 py-3">
+          <div>
+            <div class="font-mono text-xs font-semibold text-slate-700">{{.key}}</div>
+            <div class="text-[11px] text-slate-400">{{.description}} · rollout {{.rollout}}%</div>
+          </div>
+          <button class="btn-sm {{if .enabledBool}}btn-primary{{else}}btn-ghost{{end}}"
+                  hx-post="/admin/flags/{{.key}}/toggle" hx-target="#flag-result" hx-swap="innerHTML">
+            {{if .enabledBool}}ON{{else}}OFF{{end}}
+          </button>
+        </div>
+        {{end}}
+      </div>
+      <div id="flag-result" class="px-5 py-2 text-xs"></div>
+    </section>
+
+    <section class="card">
+      <div class="border-b border-slate-100 px-5 py-3.5"><h2 class="text-base">{{.T "admin.system"}}</h2></div>
+      <div class="grid gap-2 p-5 sm:grid-cols-2">
+        <button class="btn-ghost" hx-post="/admin/system/cache-clear" hx-target="#sys-result" hx-swap="innerHTML">🧹 Clear cache</button>
+        <button class="btn-ghost" hx-post="/admin/system/backup" hx-target="#sys-result" hx-swap="innerHTML">💾 {{.T "admin.backups"}}</button>
+        <button class="btn-ghost" hx-post="/admin/system/sitemap" hx-target="#sys-result" hx-swap="innerHTML">🗺️ Sitemap</button>
+        <button class="btn-ghost" hx-post="/admin/system/reindex" hx-target="#sys-result" hx-swap="innerHTML">🔎 Reindex</button>
+        <button class="btn-ghost" hx-post="/admin/system/optimize" hx-target="#sys-result" hx-swap="innerHTML">⚡ Optimize DB</button>
+        <button class="btn-danger" hx-post="/admin/system/maintenance" hx-target="#sys-result" hx-swap="innerHTML">🚧 {{.T "admin.maintenance"}}</button>
+      </div>
+      <div id="sys-result" class="px-5 pb-4 text-xs"></div>
+    </section>
+
+    <section class="card">
+      <div class="border-b border-slate-100 px-5 py-3.5"><h2 class="text-base">{{.T "admin.queue"}}</h2></div>
+      <div class="overflow-x-auto">
+        <table class="table">
+          <thead><tr><th>Queue</th><th>waiting</th><th>active</th><th>completed</th><th>failed</th></tr></thead>
+          <tbody>
+            {{range .Queues}}
+            <tr><td class="font-mono text-xs">{{.Name}}</td><td>{{.Waiting}}</td><td>{{.Active}}</td><td>{{.Completed}}</td><td>{{.Failed}}</td></tr>
+            {{else}}
+            <tr><td colspan="5" class="py-8 text-center text-xs text-slate-400">{{$.T "common.empty"}}</td></tr>
+            {{end}}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</div>
+{{end}}

@@ -1,0 +1,33 @@
+{{define "content"}}
+<div class="card overflow-hidden">
+  <div class="flex flex-wrap items-center gap-3 border-b border-slate-100 px-5 py-3.5">
+    <h2 class="flex-1 text-base">{{.Heading}}</h2>
+    <form method="get" class="flex gap-2">
+      <input name="q" value="{{.Query}}" class="input w-56 py-1.5 text-xs" placeholder="{{.T `nav.search.ph`}}">
+      {{if .StatusOptions}}
+      <select name="status" class="input w-40 py-1.5 text-xs">
+        <option value="">{{.T "common.all"}}</option>
+        {{range .StatusOptions}}<option value="{{.}}" {{if eq . $.Status}}selected{{end}}>{{.}}</option>{{end}}
+      </select>
+      {{end}}
+      <button class="btn-ghost btn-sm">{{.T "common.filter"}}</button>
+    </form>
+    {{if .ExportURL}}<a class="btn-ghost btn-sm" href="{{.ExportURL}}">⬇ {{.T "common.export"}}</a>{{end}}
+  </div>
+
+  <div class="overflow-x-auto">
+    <table class="table">
+      <thead><tr>{{range .Columns}}<th>{{.}}</th>{{end}}</tr></thead>
+      <tbody>
+        {{range .Rows}}
+        <tr>{{range .}}<td>{{.}}</td>{{end}}</tr>
+        {{else}}
+        <tr><td colspan="99" class="py-16 text-center text-sm text-slate-400">{{$.T "common.empty"}}</td></tr>
+        {{end}}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="px-5 py-3">{{template "pager" .Pager}}</div>
+</div>
+{{end}}

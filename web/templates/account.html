@@ -1,0 +1,52 @@
+{{define "content"}}
+<div class="container-x py-8">
+  <div class="grid gap-6 lg:grid-cols-[240px_1fr]">
+    <aside class="card h-fit p-3">
+      <div class="mb-3 border-b border-slate-100 p-3">
+        <div class="text-sm font-bold text-slate-800">{{.User.FirstName}} {{.User.LastName}}</div>
+        <div class="text-[11px] text-slate-400">{{.User.Email}}</div>
+        <span class="badge mt-2 bg-cyan-50 text-cyan-800">{{.User.Role}}</span>
+      </div>
+      <nav class="space-y-0.5">
+        {{range .Tabs}}
+        <a href="/account/{{.Key}}" class="block rounded-lg px-3 py-2 text-sm font-medium {{if .Active}}bg-cyan-700 text-white{{else}}text-slate-600 hover:bg-slate-100{{end}}">{{.Label}}</a>
+        {{end}}
+      </nav>
+    </aside>
+
+    <div class="space-y-5">
+      <div class="grid gap-3 sm:grid-cols-4">
+        {{range .Cards}}
+        <div class="stat">
+          <div class="text-[11px] text-slate-500">{{.Label}}</div>
+          <div class="mt-1 text-lg font-black text-slate-900">{{.Value}}</div>
+        </div>
+        {{end}}
+      </div>
+
+      <div class="card overflow-hidden">
+        <div class="flex items-center justify-between border-b border-slate-100 px-5 py-3.5">
+          <h2 class="text-base">{{.PanelTitle}}</h2>
+          {{if .PanelAction}}<a class="btn-ghost btn-sm" href="{{.PanelAction.URL}}">{{.PanelAction.Label}}</a>{{end}}
+        </div>
+        {{if .Rows}}
+        <div class="overflow-x-auto">
+          <table class="table">
+            <thead><tr>{{range .Columns}}<th>{{.}}</th>{{end}}</tr></thead>
+            <tbody>
+              {{range .Rows}}
+              <tr>{{range .}}<td>{{.}}</td>{{end}}</tr>
+              {{end}}
+            </tbody>
+          </table>
+        </div>
+        {{else}}
+        <div class="grid place-items-center gap-2 p-14 text-center">
+          <span class="text-3xl">📭</span><p class="text-sm text-slate-500">{{.T "common.empty"}}</p>
+        </div>
+        {{end}}
+      </div>
+    </div>
+  </div>
+</div>
+{{end}}
